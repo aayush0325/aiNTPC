@@ -18,3 +18,24 @@ model User {
   email String  @unique
   name  String
 }
+
+model EnergyData {
+  id Int @id @default(autoincrement())
+  date DateTime
+  production Float // electricity production
+  maxtempC Float // maximum temperature measured that day
+  mintempC Float // minimum temperature measured that day
+  sunHour Float // number of hours of sun
+  cloudcover Int // cloudiness rate
+  tempC Int // average temperature measured that day
+  FeelsLikeC Int // the temperature felt that day
+  humidity Int // humidity rate
+  windSpeedKmph Int // wind speed in kmph
+  precipMM Float // precipitation in mm
+  weatherDesc String // weather description
+}
+
+model IsPopulated {
+  id Int @id @default(autoincrement())
+  value Boolean @default(false) // true if the data is populated, false otherwise
+}

@@ -27,6 +27,15 @@ export async function POST(req: NextRequest) {
             console.log(body);
             return NextResponse.json({ msg: 'invalid request' }, { status: 400 });
         }
+
+        const existingUser = await prisma.user.findUnique({
+            where: { id: userId },
+        });
+        if (existingUser) {
+            console.log('USER ALREADY EXISTS');
+            return NextResponse.json({ msg: 'user already exists' }, { status: 400 });
+        }
+
         const user = await prisma.user.create({
             data: {
                 id: userId,
