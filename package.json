@@ -11,12 +11,14 @@
         "prepare": "husky"
     },
     "dependencies": {
+        "@clerk/clerk-react": "^5.24.0",
         "@clerk/nextjs": "^6.12.0",
         "@google/generative-ai": "^0.22.0",
         "@prisma/client": "^6.4.1",
         "@radix-ui/react-slot": "^1.1.2",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
+        "cookies-next": "^5.1.0",
         "dotenv": "^16.4.7",
         "lucide-react": "^0.475.0",
         "motion": "^12.4.7",
@@ -24,7 +26,8 @@
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "tailwind-merge": "^3.0.1",
-        "tailwindcss-animate": "^1.0.7"
+        "tailwindcss-animate": "^1.0.7",
+        "zod": "^3.24.2"
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3",
