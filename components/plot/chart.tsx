@@ -16,7 +16,10 @@ const ChartComponent = () => {
     const renderHTML = plt.render('html');
     return (
         <div className="flex justify-center">
-            <div dangerouslySetInnerHTML={{ __html: renderHTML }} className="bg-gray-100 hover:scale-110 transition-all hover:shadow-md" />
+            <div
+                dangerouslySetInnerHTML={{ __html: renderHTML }}
+                className="bg-gray-100 hover:scale-110 transition-all hover:shadow-md"
+            />
         </div>
     );
 };
