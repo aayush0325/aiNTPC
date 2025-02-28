@@ -6,6 +6,7 @@ import { SparklesText } from '@/components/magicui/sparkles-text';
 
 import { createUser } from './createuser';
 import { useEffect, useState } from 'react';
+import ChartComponent from '@/components/plot/chart';
 
 export default function Home() {
     const { user, isLoaded, isSignedIn } = useUser();
@@ -24,10 +25,13 @@ export default function Home() {
     }, [isLoaded, isSignedIn, user]);
 
     return (
-        <div className="flex min-h-screen  ">
+        <div className="flex min-h-screen flex-col  ">
             <div className="flex justify-start mx-12 my-6 ">
                 {' '}
                 <SparklesText text={`Welcome ${fullname}`} className="text-xl" />
+            </div>
+            <div>
+                <ChartComponent />
             </div>
         </div>
     );
