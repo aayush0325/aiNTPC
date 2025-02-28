@@ -1,3 +1,3 @@
 export async function GET() {
-  return Response.json({ msg: "server healthy" });
+    return Response.json({ msg: 'server healthy' });
 }
