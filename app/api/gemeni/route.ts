@@ -1,13 +1,12 @@
-import { readFile } from 'fs';
+import model from '@/lib/gemeni';
 
 export async function GET() {
-    readFile('./input.csv', 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            return;
-        }
-        console.log('input file imported');
-    });
-
-    return Response.json({ msg: 'server healthy' });
+    try {
+        const response = await model.generateContent('hello gemeni');
+        console.log(response.response)
+        return Response.json({ msg: `${response.response.text()}` });
+    } catch (err) {
+        console.error(err);
+        return Response.json({ msg: `maa chud gayi` });
+    }
 }
