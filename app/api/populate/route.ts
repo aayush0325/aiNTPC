@@ -31,6 +31,13 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ msg: 'invalid password' }, { status: 401 });
         }
 
+        const checkPopulated = await prisma.isPopulated.findFirst();
+
+        if (checkPopulated?.value) {
+            console.log('ATTEMPT TO OVERPOPULATE DB');
+            return NextResponse.json({ msg: 'database already populated' }, { status: 400 });
+        }
+
         const fileContent = await fs.readFile('./lib/input.csv', 'utf-8');
 
         const records = parse(fileContent, {
@@ -56,11 +63,15 @@ export async function POST(req: NextRequest) {
                 },
             });
         }
-
+        await prisma.isPopulated.create({
+            data: {
+                value: true,
+            },
+        });
         console.log('DATABASE POPULATED SUCCESSFULLY');
         return NextResponse.json({ msg: 'Database populated successfully' }, { status: 201 });
     } catch (err) {
         console.error(err);
-        return NextResponse.json({ msg: 'An error occurred' }, { status: 500 });
+        return NextResponse.json({ msg: `An error occurred ${err}` }, { status: 500 });
     }
 }
