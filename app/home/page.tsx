@@ -11,7 +11,6 @@ import { EnergyData } from '@/types/homepage/types';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
-
 export default function Home() {
     const { user, isLoaded, isSignedIn } = useUser();
     const [fullname, setFullName] = useState<string | null>('');
@@ -98,7 +97,9 @@ export default function Home() {
                         <div className="text-2xl font-bold">No data available</div>
                     )}
                 </div>
-                <div className='mb-20' ><Button onClick={() => router.push('/prediction')}>View predictions</Button></div>
+                <div className="mb-20">
+                    <Button onClick={() => router.push('/prediction')}>View predictions</Button>
+                </div>
             </div>
         </div>
     );

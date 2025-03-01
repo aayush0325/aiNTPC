@@ -1,7 +1,8 @@
-'use client'
+'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
+import { getCookie } from 'cookies-next';
 
 type Message = {
     id: string;
@@ -13,12 +14,17 @@ type Message = {
 export default function Page() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
+    const [sessionCookie, setSessionCookie] = useState<string>('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
     // Auto-scroll to bottom when messages change
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        (async () => {
+            const session = await getCookie('__session');
+            setSessionCookie(session);
+        })();
     }, [messages]);
 
     // Focus input on load
@@ -26,7 +32,7 @@ export default function Page() {
         inputRef.current?.focus();
     }, []);
 
-    const sendMessage = () => {
+    const sendMessage = async () => {
         if (input.trim()) {
             // Add user message
             const userMessage: Message = {
@@ -35,21 +41,49 @@ export default function Page() {
                 sender: 'user',
                 timestamp: new Date(),
             };
-            
+
             setMessages(prev => [...prev, userMessage]);
             setInput('');
-            
-            // Simulate a response
-            setTimeout(() => {
-                const systemMessage: Message = {
+
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/gemeni`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${sessionCookie}`,
+                    },
+                    body: JSON.stringify({ message: input }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+
+                if (data.geminiResponse) {
+                    const systemMessage: Message = {
+                        id: (Date.now() + 1).toString(),
+                        text: data.geminiResponse,
+                        sender: 'system',
+                        timestamp: new Date(),
+                    };
+
+                    setMessages(prev => [...prev, systemMessage]);
+                } else {
+                    throw new Error('Invalid response format');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                const errorMessage: Message = {
                     id: (Date.now() + 1).toString(),
-                    text: `You said: "${input}"`,
+                    text: 'An error occurred while processing your request.',
                     sender: 'system',
                     timestamp: new Date(),
                 };
-                
-                setMessages(prev => [...prev, systemMessage]);
-            }, 1000);
+
+                setMessages(prev => [...prev, errorMessage]);
+            }
         }
     };
 
@@ -69,7 +103,7 @@ export default function Page() {
         if (messages.length === 0) {
             const welcomeMessage: Message = {
                 id: Date.now().toString(),
-                text: "Welcome to aiNTPC. How can I help you today?",
+                text: 'Welcome to aiNTPC. How can I help you today?',
                 sender: 'system',
                 timestamp: new Date(),
             };
@@ -81,9 +115,9 @@ export default function Page() {
         <div className="flex flex-col h-full">
             {/* Messages area */}
             <div className="flex-1 overflow-y-auto pb-4">
-                {messages.map((message) => (
-                    <div 
-                        key={message.id} 
+                {messages.map(message => (
+                    <div
+                        key={message.id}
                         className={`py-4 ${message.sender === 'user' ? 'bg-blue-50' : ''}`}
                     >
                         <div className="px-4">
@@ -111,7 +145,7 @@ export default function Page() {
                 ))}
                 <div ref={messagesEndRef} />
             </div>
-            
+
             {/* Input area */}
             <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 p-6 bg-white">
                 <div className="flex items-center gap-3">
@@ -119,7 +153,7 @@ export default function Page() {
                         ref={inputRef}
                         type="text"
                         value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        onChange={e => setInput(e.target.value)}
                         onKeyPress={handleKeyPress}
                         className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none"
                         placeholder="Type your message..."
@@ -128,8 +162,8 @@ export default function Page() {
                         onClick={sendMessage}
                         disabled={!input.trim()}
                         className={`p-2 rounded-r flex items-center justify-center ${
-                            input.trim() 
-                                ? 'bg-blue-500 hover:bg-blue-600 text-white' 
+                            input.trim()
+                                ? 'bg-blue-500 hover:bg-blue-600 text-white'
                                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                         }`}
                         style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
