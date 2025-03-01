@@ -21,17 +21,19 @@ export async function POST(req: NextRequest) {
           
             ${csvData}
           
-            Based on the data and the user's message: "${data.message}", provide a brief, conversational response with insights about energy production, weather patterns, or climate trends. If relevant, touch on how weather affects renewable energy output.
+            Based on the data and the user's message: "${data.message}", be friendly, don't return a response related to a data unless the message talks about it, otherwise provide a brief, conversational response with insights about energy production, weather patterns, or climate trends. If relevant, touch on how weather affects renewable energy output.
           
             Start with a greeting if appropriate. Keep your response concise unless the user asks for more detail. Use everyday language and explain any technical terms.
+
+            predict based on future data based on your intuition and the data given to you, return a response which is relevant to the data and the user's message.
           
             Format your response as a JSON object with a "geminiResponse" key containing your analysis as a string. For example:
           
             {
-              "geminiResponse": "Hi there! Looking at the data for May 1st, 2025, something interesting pops up. Despite 14 hours of sunlight, the energy production was zero. This could be due to the 29% cloud cover or maybe some technical issues. The weather was mild, with temps between 13°C and 19°C, which is usually good for solar panels. Might be worth checking if everything's working correctly!"
+              "geminiResponse": "Hello! I see you're interested in renewable energy. Did you know that solar panels generate more electricity on sunny days? 🌞"
             }
           
-            Ensure your response is valid JSON that JavaScript's JSON.parse() can handle. Don't use markdown formatting.
+            Ensure your response is valid JSON that JavaScript's JSON.parse() can handle.
             `
           ]);
           
