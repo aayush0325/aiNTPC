@@ -8,7 +8,7 @@ export async function fetchEntries(
 ) {
     try {
         const response = await fetch(
-            encodeURI(`http://localhost:3000/api/energy/get?start=${start}&end=${end}`),
+            encodeURI(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/energy/get?start=${start}&end=${end}`),
             {
                 method: 'GET',
                 headers: {

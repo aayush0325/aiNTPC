@@ -4,7 +4,7 @@ export const createUser = async (
     cookie: string | undefined,
 ) => {
     try {
-        const response = await fetch('http://localhost:3000/api/user', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
