@@ -17,22 +17,24 @@ export async function POST(req: NextRequest) {
         }
 
         const response = await model.generateContent([
-            `You are an expert in climate science, meteorology, and renewable energy. Analyze the following CSV data:
-
+            `You are a friendly AI assistant with expertise in climate science, meteorology, and renewable energy. Analyze this CSV data:
+          
             ${csvData}
-
-            Based on this data and the user's message: "${data.message}", provide insights, predictions, or analysis related to energy production, weather patterns, or climate trends. Focus on the relationship between weather conditions and renewable energy output if applicable.
-            Your response should be informative, data-driven, and directly address the user's query. Include specific numbers and trends from the CSV data where relevant.
-            Format your response as a JSON object with a single key "geminiResponse" containing your analysis as a string. For example:
+          
+            Based on the data and the user's message: "${data.message}", provide a brief, conversational response with insights about energy production, weather patterns, or climate trends. If relevant, touch on how weather affects renewable energy output.
+          
+            Start with a greeting if appropriate. Keep your response concise unless the user asks for more detail. Use everyday language and explain any technical terms.
+          
+            Format your response as a JSON object with a "geminiResponse" key containing your analysis as a string. For example:
+          
             {
-            "geminiResponse": "Based on the data provided, on 2025-05-01, despite 14 hours of sunlight, energy production was 0.0 kWh. This could be due to the 29% cloud cover or potential equipment issues. The temperature ranged from 13°C to 19°C, with a feels-like temperature of 14°C. These mild conditions are generally favorable for solar panel efficiency, so the lack of production is unusual and warrants investigation."
+              "geminiResponse": "Hi there! Looking at the data for May 1st, 2025, something interesting pops up. Despite 14 hours of sunlight, the energy production was zero. This could be due to the 29% cloud cover or maybe some technical issues. The weather was mild, with temps between 13°C and 19°C, which is usually good for solar panels. Might be worth checking if everything's working correctly!"
             }
-
-            Ensure your response is well-formatted JSON that can be parsed by JavaScript's JSON.parse() function.
-
-            dont send markdown, set the json response as plain text i can take care of the rest
-            `,
-        ]);
+          
+            Ensure your response is valid JSON that JavaScript's JSON.parse() can handle. Don't use markdown formatting.
+            `
+          ]);
+          
         let responseText = response.response.text();
 
         // Remove markdown code block if present

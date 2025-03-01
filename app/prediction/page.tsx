@@ -4,92 +4,32 @@ import { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { getCookie } from 'cookies-next';
 
-type Message = {
+export type Message = {
     id: string;
     text: string;
     sender: 'user' | 'system';
     timestamp: Date;
 };
 
+import { sendMessage } from './callgemeni';
+
 export default function Page() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
-    const [sessionCookie, setSessionCookie] = useState<string>('');
+    const [sessionCookie, setSessionCookie] = useState<string | undefined>('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // Auto-scroll to bottom when messages change
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
         (async () => {
             const session = await getCookie('__session');
             setSessionCookie(session);
         })();
-    }, [messages]);
-
-    // Focus input on load
-    useEffect(() => {
-        inputRef.current?.focus();
     }, []);
-
-    const sendMessage = async () => {
-        if (input.trim()) {
-            // Add user message
-            const userMessage: Message = {
-                id: Date.now().toString(),
-                text: input,
-                sender: 'user',
-                timestamp: new Date(),
-            };
-
-            setMessages(prev => [...prev, userMessage]);
-            setInput('');
-
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/gemeni`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${sessionCookie}`,
-                    },
-                    body: JSON.stringify({ message: input }),
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const data = await response.json();
-
-                if (data.geminiResponse) {
-                    const systemMessage: Message = {
-                        id: (Date.now() + 1).toString(),
-                        text: data.geminiResponse,
-                        sender: 'system',
-                        timestamp: new Date(),
-                    };
-
-                    setMessages(prev => [...prev, systemMessage]);
-                } else {
-                    throw new Error('Invalid response format');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                const errorMessage: Message = {
-                    id: (Date.now() + 1).toString(),
-                    text: 'An error occurred while processing your request.',
-                    sender: 'system',
-                    timestamp: new Date(),
-                };
-
-                setMessages(prev => [...prev, errorMessage]);
-            }
-        }
-    };
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            sendMessage();
+            sendMessage(input, setMessages, setInput, sessionCookie);
         }
     };
 
@@ -97,9 +37,17 @@ export default function Page() {
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
-    // For testing - you can remove this in production
+    const formatMessageText = (text: string) => {
+        const parts = text.split(/(\*\*.*?\*\*)/g);
+        return parts.map((part, index) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+                return <strong key={index}>{part.slice(2, -2)}</strong>;
+            }
+            return part;
+        });
+    };
+
     useEffect(() => {
-        // Add a welcome message if there are no messages
         if (messages.length === 0) {
             const welcomeMessage: Message = {
                 id: Date.now().toString(),
@@ -113,18 +61,14 @@ export default function Page() {
 
     return (
         <div className="flex flex-col h-full">
-            {/* Messages area */}
-            <div className="flex-1 overflow-y-auto pb-4">
+            <div className="flex-1 overflow-y-auto pb-20 px-32">
                 {messages.map(message => (
-                    <div
-                        key={message.id}
-                        className={`py-4 ${message.sender === 'user' ? 'bg-blue-50' : ''}`}
-                    >
+                    <div key={message.id} className={'py-4'}>
                         <div className="px-4">
                             {message.sender === 'user' ? (
                                 <div className="flex justify-end">
                                     <div className="max-w-md bg-blue-500 text-white rounded-lg py-2 px-4">
-                                        <div>{message.text}</div>
+                                        <div>{formatMessageText(message.text)}</div>
                                         <div className="text-xs text-blue-100 text-right mt-1">
                                             {formatTime(message.timestamp)}
                                         </div>
@@ -133,7 +77,7 @@ export default function Page() {
                             ) : (
                                 <div className="flex justify-start">
                                     <div className="max-w-md border border-gray-200 rounded-lg py-2 px-4 bg-white">
-                                        <div>{message.text}</div>
+                                        <div>{formatMessageText(message.text)}</div>
                                         <div className="text-xs text-gray-400 text-right mt-1">
                                             {formatTime(message.timestamp)}
                                         </div>
@@ -146,7 +90,6 @@ export default function Page() {
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Input area */}
             <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 p-6 bg-white">
                 <div className="flex items-center gap-3">
                     <input
@@ -154,12 +97,12 @@ export default function Page() {
                         type="text"
                         value={input}
                         onChange={e => setInput(e.target.value)}
-                        onKeyPress={handleKeyPress}
+                        onKeyDown={handleKeyPress}
                         className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none"
                         placeholder="Type your message..."
                     />
                     <button
-                        onClick={sendMessage}
+                        onClick={() => sendMessage(input, setMessages, setInput, sessionCookie)}
                         disabled={!input.trim()}
                         className={`p-2 rounded-r flex items-center justify-center ${
                             input.trim()
