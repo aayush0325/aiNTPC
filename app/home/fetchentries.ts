@@ -3,6 +3,8 @@ export async function fetchEntries(
     start: number,
     end: number,
     setEntries: any,
+    setDates: any,
+    setBounds: any,
 ) {
     try {
         const response = await fetch(
@@ -19,9 +21,13 @@ export async function fetchEntries(
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const res = (await response.json()).response;
-        console.log('response:', res);
-        setEntries(res);
+        const res = await response.json();
+        console.log('response:', res.response);
+        setEntries(res.response);
+        setDates([
+            new Date(res.firstEntryDate).toLocaleString(),
+            new Date(res.lastEntryDate).toLocaleString(),
+        ]);
     } catch (error) {
         console.error('Error creating user:', error);
         throw error;

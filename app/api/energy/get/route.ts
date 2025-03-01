@@ -29,12 +29,21 @@ export async function GET(req: NextRequest) {
                     lte: end,
                 },
             },
+            orderBy: {
+                id: 'asc',
+            },
         });
-        if (response) {
+
+        if (response.length > 0) {
+            const firstEntryDate = response[0].date;
+            const lastEntryDate = response[response.length - 1].date;
+
             return NextResponse.json(
                 {
                     msg: 'energy entries found',
                     response,
+                    firstEntryDate,
+                    lastEntryDate,
                 },
                 { status: 200 },
             );
