@@ -8,7 +8,8 @@ import { fetchEntries } from './fetchentries';
 import { useEffect, useState } from 'react';
 import ChartComponent from '@/components/plot/chart';
 import { EnergyData } from '@/types/homepage/types';
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
     const [bounds, setBounds] = useState<number[]>([1, 20]);
     const [entries, setEntries] = useState<EnergyData[]>([]);
     const [dates, setDates] = useState<string[]>([]);
+    const router = useRouter();
 
     useEffect(() => {
         if (isLoaded && isSignedIn) {
@@ -96,7 +98,7 @@ export default function Home() {
                         <div className="text-2xl font-bold">No data available</div>
                     )}
                 </div>
-                <div className='mb-20'><Button>View predictions</Button></div>
+                <div className='mb-20' ><Button onClick={() => router.push('/prediction')}>View predictions</Button></div>
             </div>
         </div>
     );
