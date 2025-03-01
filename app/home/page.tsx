@@ -8,7 +8,8 @@ import { fetchEntries } from './fetchentries';
 import { useEffect, useState } from 'react';
 import ChartComponent from '@/components/plot/chart';
 import { EnergyData } from '@/types/homepage/types';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
+
 
 export default function Home() {
     const { user, isLoaded, isSignedIn } = useUser();
@@ -95,6 +96,7 @@ export default function Home() {
                         <div className="text-2xl font-bold">No data available</div>
                     )}
                 </div>
+                <div className='mb-20'><Button>View predictions</Button></div>
             </div>
         </div>
     );
