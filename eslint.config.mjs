@@ -26,9 +26,9 @@ const eslintConfig = [
             '@typescript-eslint/no-unsafe-return': 'off',
             '@typescript-eslint/no-unsafe-call': 'off',
             '@typescript-eslint/no-unsafe-assignment': 'off',
-            'no-unused-vars': 'off'
-        }
-    }
+            'no-unused-vars': 'off',
+        },
+    },
 ];
 
 export default eslintConfig;

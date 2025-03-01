@@ -49,47 +49,51 @@ export default function Home() {
             <div className="flex pl-4 md:pl-20 justify-between">
                 <h1 className="text-xl md:text-2xl font-bold">Know your renewable energy</h1>
                 <div className="mr-12 flex gap-4">
-                    <Button onClick={handlePrevious}>
-                        previous
-                    </Button>
-                    <Button onClick={handleNext}>
-                        next
-                    </Button>
+                    <Button onClick={handlePrevious}>previous</Button>
+                    <Button onClick={handleNext}>next</Button>
                 </div>
             </div>
-            <div className='flex justify-center items-center flex-col gap-12'>
+            <div className="flex justify-center items-center flex-col gap-12">
                 <div>
-                    <h1 className='font-bold'>{dates[0] && dates[1] && `Data from ${dates[0]} to ${dates[1]}` }</h1>
+                    <h1 className="font-bold">
+                        {dates[0] && dates[1] && `Data from ${dates[0]} to ${dates[1]}`}
+                    </h1>
                 </div>
                 <div className="flex flex-wrap justify-center w-full gap-4 md:gap-12">
-                    <ChartComponent
-                        x={entries.map(entry => new Date(entry.date).getTime())}
-                        y={entries.map(entry => entry.tempC)}
-                        xlabel="Time"
-                        ylabel="Temperature"
-                        ymin={Math.min(...entries.map(entry => entry.tempC)) - 10}
-                    />
-                    <ChartComponent
-                        x={entries.map(entry => new Date(entry.date).getTime())}
-                        y={entries.map(entry => entry.production)}
-                        xlabel="Time"
-                        ylabel="Production (kWh)"
-                        ymin={Math.min(...entries.map(entry => entry.production)) - 10}
-                    />
-                    <ChartComponent
-                        x={entries.map(entry => new Date(entry.date).getTime())}
-                        y={entries.map(entry => entry.sunHour)}
-                        xlabel="Time"
-                        ylabel="Sun Hours"
-                        ymin={Math.min(...entries.map(entry => entry.sunHour)) - 10}
-                    />
-                    <ChartComponent
-                        x={entries.map(entry => new Date(entry.date).getTime())}
-                        y={entries.map(entry => entry.windSpeedKmph)}
-                        xlabel="Time"
-                        ylabel="Wind Speed (kmph)"
-                        ymin={Math.min(...entries.map(entry => entry.windSpeedKmph)) - 10}
-                    />
+                    {entries ? (
+                        <>
+                            <ChartComponent
+                                x={entries.map(entry => new Date(entry.date).getTime())}
+                                y={entries.map(entry => entry.tempC)}
+                                xlabel="Time"
+                                ylabel="Temperature"
+                                ymin={Math.min(...entries.map(entry => entry.tempC)) - 10}
+                            />
+                            <ChartComponent
+                                x={entries.map(entry => new Date(entry.date).getTime())}
+                                y={entries.map(entry => entry.production)}
+                                xlabel="Time"
+                                ylabel="Production (kWh)"
+                                ymin={Math.min(...entries.map(entry => entry.production)) - 10}
+                            />
+                            <ChartComponent
+                                x={entries.map(entry => new Date(entry.date).getTime())}
+                                y={entries.map(entry => entry.sunHour)}
+                                xlabel="Time"
+                                ylabel="Sun Hours"
+                                ymin={Math.min(...entries.map(entry => entry.sunHour)) - 10}
+                            />
+                            <ChartComponent
+                                x={entries.map(entry => new Date(entry.date).getTime())}
+                                y={entries.map(entry => entry.windSpeedKmph)}
+                                xlabel="Time"
+                                ylabel="Wind Speed (kmph)"
+                                ymin={Math.min(...entries.map(entry => entry.windSpeedKmph)) - 10}
+                            />
+                        </>
+                    ) : (
+                        <div className="text-2xl font-bold">No data available</div>
+                    )}
                 </div>
             </div>
         </div>
