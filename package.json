@@ -7,8 +7,7 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "format": "npx prettier . --write",
-        "prepare": "husky"
+        "format": "npx prettier . --write"
     },
     "dependencies": {
         "@clerk/clerk-react": "^5.24.0",
