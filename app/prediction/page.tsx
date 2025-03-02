@@ -29,7 +29,7 @@ export default function Page() {
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            sendMessage(input, setMessages, setInput, sessionCookie);
+            sendMessage(input, setMessages, setInput, sessionCookie, messages);
         }
     };
 
@@ -102,7 +102,7 @@ export default function Page() {
                         placeholder="Type your message..."
                     />
                     <button
-                        onClick={() => sendMessage(input, setMessages, setInput, sessionCookie)}
+                        onClick={() => sendMessage(input, setMessages, setInput, sessionCookie, messages)}
                         disabled={!input.trim()}
                         className={`p-2 rounded-r flex items-center justify-center ${
                             input.trim()

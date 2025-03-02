@@ -5,6 +5,7 @@ export const sendMessage = async (
     setMessages: any,
     setInput: any,
     sessionCookie: string | undefined,
+    messages: Message[]
 ) => {
     if (input.trim()) {
         // Add user message
@@ -35,7 +36,7 @@ export const sendMessage = async (
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${sessionCookie}`,
                 },
-                body: JSON.stringify({ message: input }),
+                body: JSON.stringify({ message: input, previous: messages }),
             });
 
             if (!response.ok) {
