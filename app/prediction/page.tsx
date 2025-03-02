@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send } from 'lucide-react';
+import { Send, Delete } from 'lucide-react';
 import { getCookie } from 'cookies-next';
 
 export type Message = {
@@ -102,7 +102,9 @@ export default function Page() {
                         placeholder="Type your message..."
                     />
                     <button
-                        onClick={() => sendMessage(input, setMessages, setInput, sessionCookie, messages)}
+                        onClick={() =>
+                            sendMessage(input, setMessages, setInput, sessionCookie, messages)
+                        }
                         disabled={!input.trim()}
                         className={`p-2 rounded-r flex items-center justify-center ${
                             input.trim()
@@ -112,6 +114,22 @@ export default function Page() {
                         style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
                     >
                         <Send size={20} />
+                    </button>
+                    <button
+                        onClick={() =>
+                            setMessages([
+                                {
+                                    id: Date.now().toString(),
+                                    text: 'Welcome to aiNTPC. How can I help you today?',
+                                    sender: 'system',
+                                    timestamp: new Date(),
+                                },
+                            ])
+                        }
+                        className={`p-2 rounded-r flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white`}
+                        style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                    >
+                        <Delete size={20} />
                     </button>
                 </div>
             </div>

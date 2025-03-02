@@ -5,12 +5,14 @@ import zod from 'zod';
 
 const gemeniCallSchema = zod.object({
     message: zod.string(),
-    previous: zod.array(zod.object({
-        id: zod.any(),
-        text: zod.string(),
-        sender: zod.string(),
-        timestamp: zod.any(),
-    })),
+    previous: zod.array(
+        zod.object({
+            id: zod.any(),
+            text: zod.string(),
+            sender: zod.string(),
+            timestamp: zod.any(),
+        }),
+    ),
 });
 
 export async function POST(req: NextRequest) {
@@ -24,7 +26,7 @@ export async function POST(req: NextRequest) {
 
         const response = await model.generateContent([
             `You are a friendly AI assistant with expertise in climate science, meteorology, and renewable energy. Analyze the CSV data and previous messages provided to you:
-            ${data.previous.map((msg) => `${msg.sender}: ${msg.text}`).join('\n')}
+            ${data.previous.map(msg => `${msg.sender}: ${msg.text}`).join('\n')}
             Based on the data and the user's message: "${data.message}", be friendly, don't return a response related to the data unless the message talks about it, otherwise provide a brief, conversational response with insights about energy production, weather patterns, or climate trends. If relevant, touch on how weather affects renewable energy output.
           
             Start with a greeting if appropriate. Keep your response concise unless the user asks for more detail. Use everyday language and explain any technical terms.
@@ -38,9 +40,9 @@ export async function POST(req: NextRequest) {
             }
           
             Ensure your response is valid JSON that JavaScript's JSON.parse() can handle.
-            `
+            `,
         ]);
-          
+
         let responseText = response.response.text();
 
         // Remove markdown code block if present

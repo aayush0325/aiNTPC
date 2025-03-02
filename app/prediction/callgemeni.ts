@@ -5,7 +5,7 @@ export const sendMessage = async (
     setMessages: any,
     setInput: any,
     sessionCookie: string | undefined,
-    messages: Message[]
+    messages: Message[],
 ) => {
     if (input.trim()) {
         // Add user message
@@ -53,9 +53,9 @@ export const sendMessage = async (
                     timestamp: new Date(),
                 };
 
-                setMessages((prev: Message[]) => prev.map(msg => 
-                    msg.id === loadingMessage.id ? systemMessage : msg
-                ));
+                setMessages((prev: Message[]) =>
+                    prev.map(msg => (msg.id === loadingMessage.id ? systemMessage : msg)),
+                );
             } else {
                 throw new Error('Invalid response format');
             }
@@ -68,9 +68,9 @@ export const sendMessage = async (
                 timestamp: new Date(),
             };
 
-            setMessages((prev: Message[]) => prev.map(msg => 
-                msg.id === loadingMessage.id ? errorMessage : msg
-            ));
+            setMessages((prev: Message[]) =>
+                prev.map(msg => (msg.id === loadingMessage.id ? errorMessage : msg)),
+            );
         }
     }
 };
